@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road to Ultraman</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%231565c0'/></svg>">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Road to Ultraman">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #ffffff;
+  --bg: #f4f4f6;
+  --ink: #1a1a2e;
+  --ink-mid: #4a4a6a;
+  --ink-light: #9090aa;
+  --border: #dcdce8;
+  --border-light: #ebebf2;
+  --mint: #1565c0;
+  --mint-light: #e3eeff;
+  --mint-dark: #0d47a1;
+  --accent: #0a2d6e;
+  --red: #e53935;
+  --gold: #ff6f00;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  min-height: 100%;
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+.header {
+  padding: 28px 24px 16px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-top {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.app-title {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  font-family: 'Bangers', cursive;
+  font-size: 26px;
+  letter-spacing: 0.08em;
+}
+.app-sub {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--mint);
+  text-transform: uppercase;
+}
+.header-date {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--ink-mid);
+  letter-spacing: 0.04em;
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-align: center;
+  cursor: pointer;
+  color: var(--ink-light);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+.tab.active {
+  color: var(--mint-dark);
+  border-bottom-color: var(--mint);
+  font-weight: 400;
+}
+
+/* ── Panel ── */
+.panel { display: none; flex: 1; }
+.panel.active { display: block; }
+
+/* ── Progress Bar ── */
+.progress-wrap {
+  padding: 16px 24px 0;
+}
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.progress-label { font-size: 11px; color: var(--ink-light); letter-spacing: 0.06em; }
+.progress-count { font-size: 11px; color: var(--mint-dark); font-weight: 400; }
+.progress-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--mint);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* ── Category ── */
+.category {
+  margin: 0 0 0;
+}
+.cat-header {
+  padding: 20px 24px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cat-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+  flex-shrink: 0;
+}
+.cat-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+.cat-score {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--ink-light);
+  font-weight: 300;
+}
+
+.tasks {
+  padding: 0 16px;
+}
+
+/* ── Task Row ── */
+.task-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--border-light);
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 6px;
+  margin-bottom: 2px;
+}
+.task-row:last-child { border-bottom: none; }
+.task-row:active { background: var(--mint-light); }
+
+.check-box {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  background: var(--white);
+}
+.check-box.checked {
+  background: var(--mint);
+  border-color: var(--mint);
+}
+.check-icon {
+  opacity: 0;
+  transition: opacity 0.15s;
+  color: white;
+  font-size: 12px;
+  line-height: 1;
+}
+.check-box.checked .check-icon { opacity: 1; }
+
+.task-label {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink);
+  transition: color 0.2s;
+  flex: 1;
+}
+.task-row.done .task-label {
+  color: var(--ink-light);
+  text-decoration: line-through;
+  text-decoration-color: var(--mint);
+}
+
+/* ── Save Button ── */
+.save-wrap {
+  padding: 20px 24px 32px;
+}
+.btn-save {
+  width: 100%;
+  padding: 15px;
+  background: var(--mint);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  font-family: inherit;
+}
+.btn-save:hover { background: var(--mint-dark); }
+.btn-save:active { transform: scale(0.98); }
+.btn-save:disabled { background: var(--border); color: var(--ink-light); cursor: default; }
+.btn-redo {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: none;
+  color: var(--ink-mid);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  font-family: inherit;
+}
+.btn-redo:hover { border-color: var(--mint); color: var(--mint); }
+
+/* ── Record Panel ── */
+.record-wrap {
+  padding: 20px 16px;
+}
+
+/* ── Stats ── */
+.stats-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 0 8px;
+}
+.stat-card {
+  flex: 1;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.stat-num {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--mint-dark);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 10px;
+  color: var(--ink-light);
+  letter-spacing: 0.06em;
+}
+
+/* ── Year/Month Nav ── */
+.year-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+.year-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  background: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ink-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+.year-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink);
+  min-width: 80px;
+  text-align: center;
+}
+
+/* ── Month Selector ── */
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  padding: 0 8px;
+  margin-bottom: 20px;
+}
+.month-btn {
+  padding: 6px 4px;
+  border: 1px solid var(--border);
+  background: none;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--ink-mid);
+  text-align: center;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.month-btn.active {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: white;
+  font-weight: 400;
+}
+.month-btn.has-data {
+  border-color: var(--mint);
+  color: var(--mint-dark);
+}
+
+/* ── Calendar Grid ── */
+.cal-wrap {
+  padding: 0 8px;
+}
+.cal-header-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 4px;
+}
+.cal-day-label {
+  text-align: center;
+  font-size: 10px;
+  color: var(--ink-light);
+  padding: 4px 0;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.cal-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg);
+  position: relative;
+  border: 1px solid transparent;
+}
+.cal-cell.empty { background: transparent; cursor: default; }
+.cal-cell.today { border-color: var(--mint); }
+.cal-cell.future { opacity: 0.3; cursor: default; }
+
+.cal-cell .day-num {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--ink-mid);
+  line-height: 1;
+}
+.cal-cell .day-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  margin-top: 2px;
+  opacity: 0;
+}
+.cal-cell.has-record .day-dot { opacity: 1; }
+.cal-cell.full .day-num { color: var(--mint-dark); font-weight: 400; }
+.cal-cell.full .day-dot { background: var(--mint); }
+.cal-cell.partial .day-dot { background: var(--gold); }
+.cal-cell.full { background: var(--mint-light); }
+
+/* ── Detail Popup ── */
+.detail-popup {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--white);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 30px rgba(0,0,0,0.12);
+  padding: 20px 24px 36px;
+  z-index: 100;
+  display: none;
+  animation: slideUp 0.25s ease;
+}
+.detail-popup.open { display: block; }
+@keyframes slideUp {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+.popup-handle {
+  width: 36px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.popup-date {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-mid);
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+.popup-score-big {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.popup-score-num {
+  font-size: 48px;
+  font-weight: 200;
+  color: var(--mint-dark);
+  line-height: 1;
+}
+.popup-score-denom {
+  font-size: 16px;
+  color: var(--ink-light);
+  font-weight: 300;
+}
+.popup-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.popup-cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.popup-cat-name {
+  font-size: 11px;
+  color: var(--ink-mid);
+  letter-spacing: 0.08em;
+  width: 100px;
+  flex-shrink: 0;
+}
+.popup-cat-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.popup-cat-fill {
+  height: 100%;
+  background: var(--mint);
+  border-radius: 2px;
+  transition: width 0.4s;
+}
+.popup-cat-val {
+  font-size: 11px;
+  color: var(--ink-light);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.popup-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--ink-light);
+  cursor: pointer;
+  font-family: inherit;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 99;
+  display: none;
+}
+.overlay.open { display: block; }
+
+/* ── Streak/All-time ── */
+.streak-row {
+  display: flex;
+  gap: 10px;
+  padding: 0 8px;
+  margin-top: 16px;
+}
+.streak-card {
+  flex: 1;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.streak-num {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.streak-label {
+  font-size: 10px;
+  color: var(--ink-light);
+  letter-spacing: 0.05em;
+}
+
+/* ── Result Panel ── */
+.result-wrap {
+  padding: 24px 20px 36px;
+}
+.result-score-area {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.result-score-num {
+  font-size: 88px;
+  font-weight: 400;
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--mint-dark);
+  transition: color 0.4s;
+}
+.result-score-denom {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink-light);
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.04em;
+}
+.result-badge-wrap {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.result-badge {
+  font-size: 32px;
+  font-weight: 400;
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  transition: color 0.4s;
+}
+.result-comment {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-mid);
+  letter-spacing: 0.04em;
+}
+
+/* Meter */
+.result-meter-wrap {
+  margin: 0 8px 28px;
+}
+.result-meter-track {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 6px;
+}
+.result-meter-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.6s ease, background 0.4s;
+  position: relative;
+  z-index: 1;
+}
+.result-meter-zones {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+.rz { flex: 1; border-right: 1px solid rgba(255,255,255,0.5); }
+.rz:last-child { border: none; }
+.rz-1 { background: #b0bec5; }
+.rz-2 { background: #78909c; }
+.rz-3 { background: #546e7a; }
+.rz-4 { background: #1565c0; }
+.rz-5 { background: #e53935; }
+.result-meter-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--ink-light);
+  padding: 0 2px;
+}
+
+/* Category breakdown */
+.result-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.result-cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.result-cat-name {
+  font-size: 11px;
+  color: var(--ink-mid);
+  letter-spacing: 0.06em;
+  width: 110px;
+  flex-shrink: 0;
+}
+.result-cat-bar {
+  flex: 1;
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.result-cat-fill {
+  height: 100%;
+  background: var(--mint);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+.result-cat-val {
+  font-size: 11px;
+  color: var(--ink-light);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.result-save-wrap {
+  margin-top: 4px;
+}
+
+/* ── Result Illust ── */
+.result-illust-wrap {
+  text-align: center;
+  margin: 8px 0 20px;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#resultIllust {
+  max-height: 160px;
+  max-width: 100%;
+  object-fit: contain;
+  animation: illustPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes illustPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.graph-section-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  padding: 0 8px;
+  margin-bottom: 10px;
+}
+.graph-box {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 16px 12px 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 300;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  z-index: 200;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <span class="app-title">Road to Ultraman</span>
+      <span class="app-sub">Daily Task</span>
+    </div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('check')">CHECK</button>
+    <button class="tab" onclick="switchTab('result')">RESULT</button>
+    <button class="tab" onclick="switchTab('record')">RECORD</button>
+  </div>
+
+  <!-- Check Panel -->
+  <div class="panel active" id="panel-check">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span class="progress-label">TODAY'S PROGRESS</span>
+        <span class="progress-count" id="progressCount">0 / 0</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div id="taskList"></div>
+
+    <div class="save-wrap">
+      <button class="btn-save" id="btnSave" onclick="saveToday()">今日の記録を保存・更新する</button>
+    </div>
+  </div>
+
+  <!-- Result Panel -->
+  <div class="panel" id="panel-result">
+    <div class="result-wrap">
+      <div class="result-score-area">
+        <div class="result-score-num" id="resultScoreNum">—</div>
+        <div class="result-score-denom">%</div>
+      </div>
+      <div class="result-badge-wrap">
+        <div class="result-badge" id="resultBadge"></div>
+        <div class="result-comment" id="resultComment"></div>
+      </div>
+      <div class="result-meter-wrap">
+        <div class="result-meter-track">
+          <div class="result-meter-fill" id="resultMeterFill"></div>
+          <div class="result-meter-zones">
+            <div class="rz rz-1"></div>
+            <div class="rz rz-2"></div>
+            <div class="rz rz-3"></div>
+            <div class="rz rz-4"></div>
+            <div class="rz rz-5"></div>
+          </div>
+        </div>
+        <div class="result-meter-labels">
+          <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+        </div>
+      </div>
+      <div class="result-cats" id="resultCats"></div>
+      <div class="result-illust-wrap">
+        <img id="resultIllust" src="" alt="" style="display:none">
+      </div>
+      <div class="result-save-wrap">
+        <button class="btn-save" onclick="saveToday()">記録を更新する</button>
+        <button class="btn-redo" onclick="switchTab('check')">← チェックに戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Record Panel -->
+  <div class="panel" id="panel-record">
+    <div class="record-wrap">
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label">DAYS RECORDED</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statAvg">—</div>
+          <div class="stat-label">AVG SCORE</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statStreak">0</div>
+          <div class="stat-label">STREAK</div>
+        </div>
+      </div>
+
+      <!-- Line Graph -->
+      <div class="graph-section-label">直近30日の推移</div>
+      <div class="graph-box">
+        <canvas id="lineChart" height="160"></canvas>
+      </div>
+
+      <div class="year-nav">
+        <button class="year-btn" onclick="changeYear(-1)">‹</button>
+        <div class="year-label" id="yearLabel"></div>
+        <button class="year-btn" onclick="changeYear(+1)">›</button>
+      </div>
+
+      <div class="month-grid" id="monthGrid"></div>
+
+      <div class="cal-wrap">
+        <div class="cal-header-row">
+          <div class="cal-day-label">日</div>
+          <div class="cal-day-label">月</div>
+          <div class="cal-day-label">火</div>
+          <div class="cal-day-label">水</div>
+          <div class="cal-day-label">木</div>
+          <div class="cal-day-label">金</div>
+          <div class="cal-day-label">土</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Detail Popup -->
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div class="detail-popup" id="detailPopup">
+  <div class="popup-handle"></div>
+  <button class="popup-close" onclick="closePopup()">✕</button>
+  <div class="popup-date" id="popupDate"></div>
+  <div class="popup-score-big">
+    <span class="popup-score-num" id="popupNum">0</span>
+    <span class="popup-score-denom" id="popupDenom">/0</span>
+  </div>
+  <div class="popup-cats" id="popupCats"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const ILLUST = {
+  perfect: 'images/perfect.png',
+  illust1: 'images/Illust1.png',
+  illust2: 'images/Illus2.png',
+  illust3: 'images/Illust3.png',
+  illust4: 'images/Illust4.png',
+  illust5: 'images/Illust5.png',
+  illust6: 'images/Illust6.png'
+};
+
+// ── Data ──
+const CATEGORIES = [
+  {
+    id: 'housework',
+    label: 'Housework',
+    tasks: ['洗濯', 'そうじ', '整理整頓', 'マウピー洗う', 'グローブの手入れ']
+  },
+  {
+    id: 'bags',
+    label: 'Get Bags Ready',
+    tasks: ['ウェア', 'タオル', '下着・くつした', 'マウスピース', 'バンデージ']
+  },
+  {
+    id: 'training',
+    label: 'Training',
+    tasks: ['朝練がんばった', '部活がんばった', '筋トレがんばった', '自主トレがんばった']
+  },
+  {
+    id: 'life',
+    label: 'Life',
+    tasks: ['よく食べた・減量した', 'お風呂はいった', 'スキンケアした', 'うんち出た', 'ケガ病気なかった'],
+    bonus: true
+  },
+  {
+    id: 'private',
+    label: 'Private',
+    tasks: ['楽しく過ごした', '相談にのった', '充実していた', 'だらつく時間あった', '恋愛した'],
+    bonus: true
+  },
+  {
+    id: 'mistake',
+    label: 'Mistake',
+    tasks: ['忘れ物してない', '落とし物してない', '失くし物してない']
+  },
+  {
+    id: 'study',
+    label: 'Study',
+    tasks: ['課題こなした']
+  }
+];
+
+// ベースタスク（negative除く）の合計
+const BASE_TASKS = CATEGORIES.filter(c => !c.negative).reduce((s, c) => s + c.tasks.length, 0);
+// bonus対象タスク数
+const BONUS_TASKS = CATEGORIES.filter(c => c.bonus).reduce((s, c) => s + c.tasks.length, 0);
+// 後方互換用
+const TOTAL_TASKS = BASE_TASKS;
+
+// State
+let checked = {}; // { catId: { taskIdx: bool } }
+const today = new Date();
+const todayKey = dateKey(today);
+let viewYear = today.getFullYear();
+let viewMonth = today.getMonth(); // 0-indexed
+
+function dateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// ── Init ──
+function init() {
+  // Header date
+  const opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  document.getElementById('headerDate').textContent = today.toLocaleDateString('ja-JP', opts);
+
+  // Load today's check state
+  const saved = localStorage.getItem('rtu_check_' + todayKey);
+  if (saved) {
+    checked = JSON.parse(saved);
+  } else {
+    CATEGORIES.forEach(c => { checked[c.id] = {}; });
+  }
+
+  renderTasks();
+  renderRecord();
+}
+
+// ── Task Rendering ──
+function renderTasks() {
+  const container = document.getElementById('taskList');
+  let html = '';
+
+  CATEGORIES.forEach(cat => {
+    if (!checked[cat.id]) checked[cat.id] = {};
+    const catDone = Object.values(checked[cat.id]).filter(Boolean).length;
+    html += `
+      <div class="category">
+        <div class="cat-header">
+          <div class="cat-icon"></div>
+          <div class="cat-title">${cat.label}</div>
+          <div class="cat-score">${catDone}/${cat.tasks.length}</div>
+        </div>
+        <div class="tasks">
+    `;
+    cat.tasks.forEach((task, idx) => {
+      const isDone = checked[cat.id][idx] || false;
+      html += `
+        <div class="task-row ${isDone ? 'done' : ''}" onclick="toggle('${cat.id}', ${idx})">
+          <div class="check-box ${isDone ? 'checked' : ''}">
+            <span class="check-icon">✓</span>
+          </div>
+          <div class="task-label">${task}</div>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+  updateProgress();
+}
+
+function toggle(catId, idx) {
+  if (!checked[catId]) checked[catId] = {};
+  checked[catId][idx] = !checked[catId][idx];
+  // Auto-save draft
+  localStorage.setItem('rtu_check_' + todayKey, JSON.stringify(checked));
+  renderTasks();
+}
+
+function updateProgress() {
+  let done = 0;
+  CATEGORIES.forEach(cat => {
+    if (cat.negative) return;
+    done += Object.values(checked[cat.id] || {}).filter(Boolean).length;
+  });
+  document.getElementById('progressCount').textContent = `${done} / ${BASE_TASKS}`;
+  document.getElementById('progressFill').style.width = `${(done / BASE_TASKS) * 100}%`;
+}
+
+// ── Save ──
+function saveToday() {
+  const catData = {};
+  CATEGORIES.forEach(cat => {
+    const done = Object.values(checked[cat.id] || {}).filter(Boolean).length;
+    catData[cat.id] = { done, total: cat.tasks.length };
+  });
+  const { pct } = getScore();
+
+  const record = {
+    date: todayKey,
+    done: pct,        // %スコアを保存
+    total: 100,
+    cats: catData,
+    savedAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('rtu_record_' + todayKey, JSON.stringify(record));
+  switchTab('result');
+  showToast('記録を更新しました ✓');
+}
+
+// ── Result Panel ──
+// ── Grade ── (% based)
+const GRADES = [
+  { min: 100, max: 100, badge: 'Perfect!',      comment: 'すごい最高！',           color: '#e53935' },
+  { min:  75, max:  99, badge: 'Well Done!',    comment: 'いいね、この調子！',      color: '#1565c0' },
+  { min:  50, max:  74, badge: 'Not so good.',  comment: 'まあまあだね',             color: '#546e7a' },
+  { min:  25, max:  49, badge: 'Are you OK?',   comment: 'カラータイマーが…',       color: '#78909c' },
+  { min:   0, max:  24, badge: 'Take a break',  comment: 'いったん休もう',           color: '#b0bec5' },
+];
+
+function getScore() {
+  // ベーススコア（negative除く）
+  let baseDone = 0;
+  let bonusDone = 0;
+  CATEGORIES.forEach(cat => {
+    if (cat.negative) return;
+    const done = Object.values(checked[cat.id] || {}).filter(Boolean).length;
+    baseDone += done;
+    if (cat.bonus) bonusDone += done;
+  });
+
+  // ボーナス加算：life+private達成分を最大10%相当として加算
+  const bonusMax = BONUS_TASKS;
+  const bonusPct = bonusMax > 0 ? (bonusDone / bonusMax) * 0.1 : 0; // 最大+10%
+
+  // 基本達成率
+  const baseNonBonus = BASE_TASKS - BONUS_TASKS;
+  const nonBonusDone = baseDone - bonusDone;
+  // 非ボーナスカテゴリの達成率 + ボーナス
+  const basePct = BASE_TASKS > 0 ? baseDone / BASE_TASKS : 0;
+  let pct = Math.min(1, basePct + bonusPct);
+
+  return { pct: Math.round(pct * 100), baseDone, bonusDone };
+}
+
+function renderResult() {
+  const { pct, baseDone, bonusDone } = getScore();
+  const grade = GRADES.find(g => pct >= g.min && pct <= g.max) || GRADES[GRADES.length - 1];
+
+  document.getElementById('resultScoreNum').textContent = pct;
+  document.getElementById('resultScoreNum').style.color = grade.color;
+  document.getElementById('resultBadge').textContent = grade.badge;
+  document.getElementById('resultBadge').style.color = grade.color;
+  document.getElementById('resultComment').textContent = grade.comment;
+
+  document.getElementById('resultMeterFill').style.width = pct + '%';
+  document.getElementById('resultMeterFill').style.background = grade.color;
+
+  // イラスト
+  const img = document.getElementById('resultIllust');
+  const wellDoneList = [ILLUST.illust1, ILLUST.illust2, ILLUST.illust3, ILLUST.illust4, ILLUST.illust5, ILLUST.illust6];
+  if (pct === 100) {
+    img.src = ILLUST.perfect;
+    img.style.display = 'block';
+  } else if (pct >= 75) {
+    img.src = wellDoneList[Math.floor(Math.random() * wellDoneList.length)];
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+  // アニメーションをリセット
+  img.style.animation = 'none';
+  img.offsetHeight; // reflow
+  img.style.animation = '';
+
+  let catsHtml = '';
+  CATEGORIES.forEach(cat => {
+    const done = Object.values(checked[cat.id] || {}).filter(Boolean).length;
+    const total = cat.tasks.length;
+    const p = total > 0 ? (done / total) * 100 : 0;
+    const tag = cat.negative ? ' <span style="font-size:9px;color:#ff3b3b">−</span>'
+                : cat.bonus   ? ' <span style="font-size:9px;color:#5bc800">+</span>'
+                : '';
+    catsHtml += `
+      <div class="result-cat">
+        <div class="result-cat-name">${cat.label}${tag}</div>
+        <div class="result-cat-bar">
+          <div class="result-cat-fill" style="width:${p}%;background:${cat.negative ? '#ff3b3b' : 'var(--mint)'}"></div>
+        </div>
+        <div class="result-cat-val">${done}/${total}</div>
+      </div>`;
+  });
+  document.getElementById('resultCats').innerHTML = catsHtml;
+}
+
+// ── Record Panel ──
+function renderRecord() {
+  renderStats();
+  renderLineChart();
+  renderMonthGrid();
+  renderCalendar();
+}
+
+function getAllRecords() {
+  const records = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('rtu_record_')) {
+      try {
+        records.push(JSON.parse(localStorage.getItem(key)));
+      } catch(e) {}
+    }
+  }
+  records.sort((a,b) => a.date.localeCompare(b.date));
+  return records;
+}
+
+function renderStats() {
+  const records = getAllRecords();
+  document.getElementById('statTotal').textContent = records.length;
+
+  if (records.length > 0) {
+    const avg = records.reduce((s, r) => s + r.done, 0) / records.length;
+    document.getElementById('statAvg').textContent = avg.toFixed(1);
+  }
+
+  let streak = 0;
+  const d = new Date(today);
+  while (true) {
+    const k = dateKey(d);
+    if (localStorage.getItem('rtu_record_' + k)) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else break;
+  }
+  document.getElementById('statStreak').textContent = streak;
+}
+
+// ── Line Chart (Canvas) ──
+function renderLineChart() {
+  const canvas = document.getElementById('lineChart');
+  if (!canvas) return;
+
+  const pts = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const k = dateKey(d);
+    const rec = localStorage.getItem('rtu_record_' + k);
+    pts.push({
+      label: `${d.getMonth() + 1}/${d.getDate()}`,
+      score: rec ? JSON.parse(rec).done : null,
+      isToday: k === todayKey
+    });
+  }
+
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth - 24;
+  const H = 160;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  const PAD = { top: 12, right: 16, bottom: 28, left: 28 };
+  const gW = W - PAD.left - PAD.right;
+  const gH = H - PAD.top - PAD.bottom;
+
+  const yTicks = [0, 25, 50, 75, 100];
+  ctx.font = '9px Outfit, sans-serif';
+  ctx.fillStyle = '#9a9a9a';
+  ctx.textAlign = 'right';
+  yTicks.forEach(v => {
+    const y = PAD.top + gH - (v / 100) * gH;
+    ctx.fillText(v, PAD.left - 5, y + 3);
+    ctx.beginPath();
+    ctx.strokeStyle = v === 0 ? '#d0d0cc' : '#ebebE8';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash(v === 100 ? [] : [3, 3]);
+    ctx.moveTo(PAD.left, y);
+    ctx.lineTo(PAD.left + gW, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  ctx.fillStyle = '#b0b0b0';
+  ctx.textAlign = 'center';
+  ctx.font = '8px Outfit, sans-serif';
+  pts.forEach((p, i) => {
+    if (i % 5 === 0 || i === pts.length - 1) {
+      const x = PAD.left + (i / (pts.length - 1)) * gW;
+      ctx.fillText(p.label, x, H - 4);
+    }
+  });
+
+  const validPts = pts
+    .map((p, i) => ({
+      ...p,
+      x: PAD.left + (i / (pts.length - 1)) * gW,
+      y: p.score !== null ? PAD.top + gH - (p.score / 100) * gH : null
+    }))
+    .filter(p => p.y !== null);
+
+  if (validPts.length === 0) {
+    ctx.fillStyle = '#c0c0c0';
+    ctx.textAlign = 'center';
+    ctx.font = '12px Outfit, sans-serif';
+    ctx.fillText('まだ記録がありません', W / 2, H / 2);
+    return;
+  }
+
+  if (validPts.length > 1) {
+    const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + gH);
+    grad.addColorStop(0, 'rgba(21,101,192,0.18)');
+    grad.addColorStop(1, 'rgba(21,101,192,0)');
+    ctx.beginPath();
+    ctx.moveTo(validPts[0].x, PAD.top + gH);
+    ctx.lineTo(validPts[0].x, validPts[0].y);
+    for (let i = 1; i < validPts.length; i++) {
+      const prev = validPts[i - 1];
+      const curr = validPts[i];
+      const cpX = (prev.x + curr.x) / 2;
+      ctx.bezierCurveTo(cpX, prev.y, cpX, curr.y, curr.x, curr.y);
+    }
+    ctx.lineTo(validPts[validPts.length - 1].x, PAD.top + gH);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  if (validPts.length > 1) {
+    ctx.beginPath();
+    ctx.moveTo(validPts[0].x, validPts[0].y);
+    for (let i = 1; i < validPts.length; i++) {
+      const prev = validPts[i - 1];
+      const curr = validPts[i];
+      const cpX = (prev.x + curr.x) / 2;
+      ctx.bezierCurveTo(cpX, prev.y, cpX, curr.y, curr.x, curr.y);
+    }
+    ctx.strokeStyle = '#1565c0';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  validPts.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.isToday ? 5 : 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = p.isToday ? '#0d47a1' : '#1565c0';
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+}
+
+function renderMonthGrid() {
+  document.getElementById('yearLabel').textContent = `${viewYear}年`;
+  const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const html = months.map((m, i) => {
+    const hasData = hasRecordInMonth(viewYear, i);
+    const isActive = (i === viewMonth);
+    return `<button class="month-btn ${isActive ? 'active' : ''} ${hasData && !isActive ? 'has-data' : ''}"
+      onclick="selectMonth(${i})">${m}</button>`;
+  }).join('');
+  document.getElementById('monthGrid').innerHTML = html;
+}
+
+function hasRecordInMonth(year, month) {
+  for (let d = 1; d <= 31; d++) {
+    const dt = new Date(year, month, d);
+    if (dt.getMonth() !== month) break;
+    if (localStorage.getItem('rtu_record_' + dateKey(dt))) return true;
+  }
+  return false;
+}
+
+function renderCalendar() {
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+  let html = '';
+
+  // Empty cells
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="cal-cell empty"></div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dt = new Date(viewYear, viewMonth, d);
+    const key = dateKey(dt);
+    const isTodayCell = (key === todayKey);
+    const isFuture = (dt > today);
+
+    const record = localStorage.getItem('rtu_record_' + key);
+    let cls = '';
+    let dotColor = '';
+
+    if (record) {
+      const r = JSON.parse(record);
+      const pct = r.done / r.total;
+      if (pct >= 1) { cls = 'full has-record'; }
+      else if (pct > 0) { cls = 'partial has-record'; }
+      else { cls = 'has-record'; dotColor = 'background:var(--border);opacity:1'; }
+    }
+
+    const clickable = !isFuture && record ? `onclick="openPopup('${key}')"` : '';
+
+    html += `
+      <div class="cal-cell ${cls} ${isTodayCell ? 'today' : ''} ${isFuture ? 'future' : ''}" ${clickable}>
+        <span class="day-num">${d}</span>
+        <span class="day-dot" ${dotColor ? `style="${dotColor}"` : ''}></span>
+      </div>
+    `;
+  }
+
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function selectMonth(m) {
+  viewMonth = m;
+  renderMonthGrid();
+  renderCalendar();
+}
+
+function changeYear(delta) {
+  const maxYear = today.getFullYear();
+  const minYear = maxYear - 3;
+  viewYear = Math.min(maxYear, Math.max(minYear, viewYear + delta));
+  renderMonthGrid();
+  renderCalendar();
+}
+
+// ── Popup ──
+function openPopup(key) {
+  const record = JSON.parse(localStorage.getItem('rtu_record_' + key));
+  if (!record) return;
+
+  const [y, m, d] = key.split('-');
+  const dt = new Date(+y, +m - 1, +d);
+  document.getElementById('popupDate').textContent =
+    dt.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+
+  document.getElementById('popupNum').textContent = record.done;
+  document.getElementById('popupDenom').textContent = ' / ' + record.total;
+
+  let catsHtml = '';
+  CATEGORIES.forEach(cat => {
+    const cd = record.cats?.[cat.id] || { done: 0, total: cat.tasks.length };
+    const pct = cd.total > 0 ? (cd.done / cd.total) * 100 : 0;
+    catsHtml += `
+      <div class="popup-cat">
+        <div class="popup-cat-name">${cat.label}</div>
+        <div class="popup-cat-bar">
+          <div class="popup-cat-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="popup-cat-val">${cd.done}/${cd.total}</div>
+      </div>
+    `;
+  });
+  document.getElementById('popupCats').innerHTML = catsHtml;
+
+  document.getElementById('detailPopup').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closePopup() {
+  document.getElementById('detailPopup').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── Tabs ──
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['check', 'result', 'record'][i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  if (name === 'result') renderResult();
+  if (name === 'record') renderRecord();
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+init();
+</script>
+</body>
+</html>
